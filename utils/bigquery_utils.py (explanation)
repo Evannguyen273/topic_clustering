@@ -1,0 +1,15 @@
+class BigQueryClient:
+    def __init__(self, service_account_key_path=None):
+        # This happens immediately when BigQueryClient() is called
+        self.service_account_key_path = service_account_key_path or os.environ.get("SERVICE_ACCOUNT_KEY_PATH")
+        # Notice we only initialize to None - no actual client created yet
+        self._client = None
+        self._storage_client = None
+    
+    @property
+    def client(self):
+        # This is ONLY executed when someone accesses .client property
+        if self._client is None:
+            credentials = self._get_credentials()
+            self._client = bigquery.Client(credentials=credentials)
+        return self._client

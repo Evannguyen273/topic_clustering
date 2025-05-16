@@ -1,0 +1,52 @@
++-------------------------------------------------------+
+|           ERROR HANDLING STRATEGIES                    |
++-------------------------------------------------------+
+
+1. TRAINING PIPELINE ERROR HANDLING
+==================================
+
+┌────────────────┐     ┌────────────────┐      
+│ Stage 1 Failure│     │  New Training  │      
+│ or 2/3/4       │────▶│    Attempt     │      
+└────────────────┘     └────────────────┘      
+        │                    ▲
+        ▼                    │
+┌────────────────┐     ┌────────────────┐
+│latest_training_│     │Create new cycle│
+│cycle.json still│     │with new ID     │
+│points to old   │────▶│leaving old     │
+│successful run  │     │artifacts intact│
+└────────────────┘     └────────────────┘
+
+
+2. PREDICTION PIPELINE ERROR HANDLING
+===================================
+
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│  Query for     │     │Error during    │     │Next prediction │
+│  time window   │────▶│  prediction    │────▶│   attempt      │
+│  T1 -> T2      │     │                │     │                │
+└────────────────┘     └────────────────┘     └────────────────┘
+                               │                      ▲
+                               ▼                      │
+                       ┌────────────────┐     ┌────────────────┐
+                       │Registry remains│     │Tries same time │
+                       │unchanged, error│────▶│window T1 -> T2 │
+                       │logged in stats │     │again           │
+                       └────────────────┘     └────────────────┘
+                       
+
+3. BATCH PROCESSING ERROR ISOLATION
+==================================
+
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│  Tech Center 1 │     │  Tech Center 2 │     │  Tech Center 3 │
+│    Fails       │     │   Succeeds     │     │    Fails       │
+└────────────────┘     └────────────────┘     └────────────────┘
+        │                     │                      │
+        ▼                     ▼                      ▼
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│Error contained │     │Success recorded│     │Error contained │
+│failures don't  │     │registry updated│     │failures don't  │
+│affect others   │     │for this center │     │affect others   │
+└────────────────┘     └────────────────┘     └────────────────┘

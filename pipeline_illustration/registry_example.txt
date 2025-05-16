@@ -1,0 +1,45 @@
++-------------------------------------------------------+
+|           PREDICTION REGISTRY EXAMPLE                  |
++-------------------------------------------------------+
+
+prediction/registry.json:
+{
+  "tech_centers": {
+    "BT-TC-Product Development & Engineering": {
+      "last_training_run": "2024-03-15T14:30:22", 
+      "last_prediction_run": "2024-04-18T06:00:03",
+      "last_processed_timestamp": "2024-04-18T05:57:41",
+      "prediction_stats": {
+        "20240417_060002": {
+          "incidents_processed": 127,
+          "success": true,
+          "processing_time": 45.21,
+          "since_timestamp": "2024-04-17T00:00:00",
+          "max_timestamp": "2024-04-17T23:58:12"
+        },
+        "20240418_060003": {
+          "incidents_processed": 93,
+          "success": true,
+          "processing_time": 38.76,
+          "since_timestamp": "2024-04-18T00:00:00",
+          "max_timestamp": "2024-04-18T05:57:41"
+        }
+      }
+    },
+    "BT-TC-Network Support": {
+      "last_training_run": "2024-04-01T09:15:32",
+      "last_prediction_run": "2024-04-18T06:00:10",
+      "last_processed_timestamp": "2024-04-18T05:45:19",
+      "prediction_stats": { ... }
+    }
+  },
+  "last_updated": "2024-04-18T06:00:05.234Z"
+}
+
+KEY POINTS:
+----------
+1. Each tech center has its own section in the registry
+2. last_processed_timestamp determines where next prediction starts
+3. History maintained in prediction_stats for auditing
+4. Registry is updated incrementally (not overwritten)
+5. Failures don't update last_processed_timestamp

@@ -1,0 +1,30 @@
++-------------------------------------------------------+
+|           TRAINING CYCLE MANAGEMENT FLOW              |
++-------------------------------------------------------+
+
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│    STAGE 1     │     │    STAGE 2     │     │    STAGE 3     │     │    STAGE 4     │
+│   Embeddings   │────▶│   Clustering   │────▶│    Analysis    │────▶│  Save Results  │
+└────────────────┘     └────────────────┘     └────────────────┘     └────────────────┘
+        │                     │                     │                       │
+        ▼                     ▼                     ▼                       ▼
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│Create cycle ID │     │Update training │     │Update training │     │Update training │
+│ YYYYMMDD format│     │info with       │     │info with       │     │info and create │
+│                │     │clustering stats│     │analysis stats  │     │latest pointer  │
+└────────────────┘     └────────────────┘     └────────────────┘     └────────────────┘
+        │                     │                     │                       │
+        ▼                     ▼                     ▼                       ▼
+┌────────────────┐     ┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+│Save to cycle-  │     │Save to cycle-  │     │Save to cycle-  │     │*ONLY NOW* save │
+│specific folder │     │specific folder │     │specific folder │     │to global latest│
+│only, not global│     │only, not global│     │only, not global│     │training pointer│
+└────────────────┘     └────────────────┘     └────────────────┘     └────────────────┘
+
+
+KEY SAFETY PRINCIPLES:
+---------------------
+1. Each stage writes artifacts to its own cycle-specific folder
+2. The "latest_training_cycle.json" pointer is ONLY updated upon full successful completion
+3. If any stage fails, new training starts with a new cycle ID, leaving previous artifacts intact
+4. The model manifest provides a comprehensive inventory of all training artifacts

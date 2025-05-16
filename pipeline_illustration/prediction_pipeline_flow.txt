@@ -1,0 +1,43 @@
++-------------------------------------------------------+
+|           PREDICTION PIPELINE FLOW                     |
++-------------------------------------------------------+
+
+┌────────────────┐
+│Start Prediction│
+└───────┬────────┘
+        │
+        ▼
+┌────────────────┐     ┌────────────────┐
+│Load last       │     │Load models from│
+│processed time  │     │latest training │
+│from registry   │     │cycle pointer   │
+└───────┬────────┘     └───────┬────────┘
+        │                      │
+        ▼                      ▼
+┌────────────────┐     ┌────────────────┐
+│Query incidents │     │Apply models to │
+│since last time │     │predict clusters│
+│until current   │────▶│               │
+└───────┬────────┘     └───────┬────────┘
+        │                      │
+        │                      ▼
+        │             ┌────────────────┐
+        │             │Apply domain and│
+        │             │topic labels    │
+        │             └───────┬────────┘
+        │                     │
+        ▼                     ▼
+┌────────────────┐     ┌────────────────┐
+│Save prediction │     │Update registry │
+│results to blob │◄────┤ONLY IF success │
+│storage & BigQ  │     │with new time   │
+└────────────────┘     └────────────────┘
+
+
+PREDICTION SAFEGUARDS:
+--------------------
+1. Each tech center maintains its own "last_processed_timestamp" in registry.json
+2. Registry is only updated after successful prediction (not before/during)
+3. Failures don't update registry, so next run tries the same time window again
+4. Prediction outputs are organized by date: tech_center/prediction/YYYYMMDD/
+5. Each run creates its own stats file with information about successes/failures

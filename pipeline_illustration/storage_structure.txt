@@ -1,0 +1,54 @@
++-------------------------------------------------------+
+|         BLOB STORAGE FOLDER STRUCTURE                 |
++-------------------------------------------------------+
+
+BT_TC_Product_Development___Engineering/        # Tech center root folder
+│
+├── latest_training_cycle.json                  # Points to most recent COMPLETED training cycle
+├── latest_model_manifest.json                  # Comprehensive model reference  
+│
+├── training_cycle_20240418/                    # Version-specific folder
+│   ├── training_info.json                      # Status tracking for this cycle
+│   │
+│   ├── embeddings/                             # Stage 1 outputs
+│   │   ├── raw_data.parquet
+│   │   ├── df_with_embeddings.parquet
+│   │   ├── classification_result.json
+│   │   └── embedding_metadata.json
+│   │
+│   ├── clustering/                             # Stage 2 outputs
+│   │   ├── clustered_df.parquet
+│   │   ├── hdbscan_clusterer.pkl
+│   │   ├── umap_reducer.pkl
+│   │   └── scaler.pkl
+│   │
+│   ├── analysis/                               # Stage 3 outputs
+│   │   ├── labeled_clusters.json
+│   │   ├── domains.json
+│   │   └── final_df.parquet
+│   │
+│   ├── results/                                # Stage 4 outputs
+│   │   ├── visualization_data.json
+│   │   ├── cluster_report.md
+│   │   └── final_df_compressed.parquet
+│   │
+│   └── model_manifest.json                     # Complete artifact inventory
+│
+├── prediction/                                 # Prediction outputs
+│   ├── 20240418/                               # Date-based folder
+│   │   ├── predictions_20240418_140530.parquet # Full results 
+│   │   ├── predictions_sample_20240418_140530.csv
+│   │   └── stats_20240418_140530.json          # Run statistics
+│   ├── 20240419/                               # Next day predictions
+│   │   └── ... 
+│   └── ...
+│
+└── logs/                                       # Various logs
+    └── ... 
+
+# Shared Registry (across tech centers)
+prediction/registry.json                        # Timestamp tracking for tech centers
+
+# Job summaries
+prediction_jobs/
+└── summary_20240418_060003.json                # Summary of batch prediction jobs

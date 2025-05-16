@@ -1,0 +1,21 @@
+# Import the main package components
+from topic_clustering.pipeline.pipeline import run_full_pipeline
+from topic_clustering.config.settings import config
+from topic_clustering.utils.azure_utils import AzureBlobStorage, blob_storage
+
+# Basic imports for working with results
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+if os.path.exists(".env"):
+    load_dotenv(".env")
+elif os.path.exists("../.env"):
+    load_dotenv("../.env")
+
+# Configure logging
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
