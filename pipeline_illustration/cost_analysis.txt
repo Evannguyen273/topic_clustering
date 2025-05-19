@@ -1,0 +1,91 @@
++-------------------------------------------------------+
+|                  COST ANALYSIS                         |
+|       MODEL-BASED vs DIRECT LLM CLASSIFICATION         |
++-------------------------------------------------------+
+
+1. MODEL-BASED APPROACH (CURRENT PIPELINE)
+=========================================
+
+┌─────────────────────────┐     ┌─────────────────────────┐
+│ TRAINING (ONE-TIME)     │     │ PREDICTION (PER ITEM)   │
+├─────────────────────────┤     ├─────────────────────────┤
+│ - LLM Text Summarization│     │ - LLM Text Summarization│
+│ - Embedding Generation  │     │ - Embedding Generation  │
+│ - Clustering            │     │ - Cluster Model Lookup  │
+│ - Label Generation      │     │                         │
+└─────────────────────────┘     └─────────────────────────┘
+        │                                 │
+        ▼                                 ▼
+┌─────────────────────────┐     ┌─────────────────────────┐
+│ COST: $10-100 per run   │     │ COST: $0.0001-0.001     │
+│ (Primarily from LLM     │     │ per incident            │
+│ operations)             │     │ (Primarily embedding    │
+│                         │     │ API calls)              │
+└─────────────────────────┘     └─────────────────────────┘
+
+EXAMPLE MONTHLY COST (10,000 incidents):
+- One-time training: $50 amortized over month = ~$1.67/day
+- Daily prediction (300/day): ~$0.03-0.30/day
+- Total monthly cost: ~$50-60
+
+SCALING CHARACTERISTIC: 
+Linear growth in prediction costs but at a very low rate.
+Large volumes remain efficient.
+
+
+2. DIRECT LLM CLASSIFICATION
+===========================
+
+┌─────────────────────────┐     ┌─────────────────────────┐
+│ TRAINING                │     │ PREDICTION (PER ITEM)   │
+├─────────────────────────┤     ├─────────────────────────┤
+│ - No training required  │     │ - Full LLM API call     │
+│ - Prompt engineering    │     │ - Context includes      │
+│   only                  │     │   examples & categories │
+│                         │     │ - Classification logic  │
+└─────────────────────────┘     └─────────────────────────┘
+        │                                 │
+        ▼                                 ▼
+┌─────────────────────────┐     ┌─────────────────────────┐
+│ COST: Minimal           │     │ COST: $0.01-0.10        │
+│ (Engineering time only) │     │ per incident            │
+│                         │     │ (Full LLM token usage)  │
+└─────────────────────────┘     └─────────────────────────┘
+
+EXAMPLE MONTHLY COST (10,000 incidents):
+- Training: $0
+- Daily prediction (300/day): ~$3-30/day
+- Total monthly cost: ~$100-1000
+
+SCALING CHARACTERISTIC: 
+Linear growth in costs at a much higher rate.
+Becomes prohibitive at large volumes.
+
+
+3. HYBRID APPROACH
+================
+
+┌─────────────────────────┐
+│ PRIMARY CLASSIFICATION  │
+│    MODEL-BASED          │
+└──────────┬──────────────┘
+           │
+           ▼
+┌─────────────────────────┐     ┌─────────────────────────┐
+│ Confident predictions   │     │ Low confidence cases    │
+│ (~90-95% of incidents)  │─────▶ (~5-10% of incidents)   │
+└─────────────────────────┘     └───────────┬─────────────┘
+                                            │
+                                            ▼
+                                ┌─────────────────────────┐
+                                │ DIRECT LLM              │
+                                │ CLASSIFICATION          │
+                                └─────────────────────────┘
+
+COST EFFICIENCY RECOMMENDATION:
+------------------------------
+For most scenarios, use the model-based approach which is 10-100X cheaper at scale.
+Only use direct LLM classification for:
+1. Very small incident volumes (dozens per day, not hundreds)
+2. Cases requiring exceptional accuracy worth the premium
+3. Hybrid approach: Model for most cases, LLM for edge cases/low confidence

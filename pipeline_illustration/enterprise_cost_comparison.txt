@@ -1,0 +1,73 @@
++-------------------------------------------------------+
+|       ENTERPRISE COST COMPARISON (15 TECH CENTERS)    |
+|       120 INCIDENTS/DAY PER TECH CENTER               |
++-------------------------------------------------------+
+
+SCENARIO PARAMETERS:
+- 15 tech centers
+- 120 incidents per day per tech center (1,800 total daily incidents)
+- 657,000 annual incidents across organization
+- Quarterly retraining (4× per year)
+
+┌─────────────────────┬────────────┬────────────┬────────────┬────────────┐
+│                     │ GPT-3.5    │ GPT-4o     │ GPT-4o     │ Direct LLM │
+│ COST COMPONENT      │ Turbo      │ mini       │            │ Approach   │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Training Cost       │ $18-21     │ $51-62     │ $202-236   │ $0         │
+│ (per tech center)   │            │            │            │            │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Annual Training     │ $1,080-    │ $3,060-    │ $12,120-   │ $0         │
+│ (15 centers × 4/yr) │ $1,260     │ $3,720     │ $14,160    │            │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Daily Prediction    │ $0.06      │ $0.18      │ $0.72      │ $1.80      │
+│ (per tech center)   │            │            │            │            │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Annual Prediction   │ $328.50    │ $985.50    │ $3,942     │ $9,855     │
+│ (all centers)       │            │            │            │            │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Storage Costs       │ $75-$150   │ $75-$150   │ $75-$150   │ $0         │
+│ (all centers)       │            │            │            │            │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ TOTAL ANNUAL COST   │ $1,483-    │ $4,120-    │ $16,137-   │ $9,855     │
+│                     │ $1,738     │ $4,855     │ $18,252    │            │
+├─────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Cost per Incident   │ $0.0023-   │ $0.0063-   │ $0.0246-   │ $0.0150    │
+│                     │ $0.0026    │ $0.0074    │ $0.0278    │            │
+└─────────────────────┴────────────┴────────────┴────────────┴────────────┘
+
+MULTI-YEAR COST PROJECTION (5 YEARS):
+┌─────────────┬────────────┬────────────┬────────────┬────────────┐
+│ Year        │ GPT-3.5    │ GPT-4o     │ GPT-4o     │ Direct LLM │
+│             │ Turbo      │ mini       │            │ Approach   │
+├─────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Year 1      │ $1,738     │ $4,855     │ $18,252    │ $9,855     │
+├─────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Year 2      │ $1,738     │ $4,855     │ $18,252    │ $9,855     │
+├─────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Year 3      │ $1,738     │ $4,855     │ $18,252    │ $9,855     │
+├─────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Year 4      │ $1,738     │ $4,855     │ $18,252    │ $9,855     │
+├─────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Year 5      │ $1,738     │ $4,855     │ $18,252    │ $9,855     │
+├─────────────┼────────────┼────────────┼────────────┼────────────┤
+│ 5-YEAR TOTAL│ $8,690     │ $24,275    │ $91,260    │ $49,275    │
+└─────────────┴────────────┴────────────┴────────────┴────────────┘
+
+KEY OBSERVATIONS:
+----------------
+1. GPT-3.5 Turbo remains the most cost-effective option by far:
+   - ~4× cheaper than Direct LLM approach
+   - ~3× cheaper than GPT-4o mini
+   - ~10× cheaper than GPT-4o
+
+2. Direct LLM approach becomes more cost-competitive at enterprise scale:
+   - Cheaper than full GPT-4o model-based approach
+   - No training overhead or maintenance
+   - Still 2× more expensive than GPT-4o mini based approach
+
+3. Hybrid Recommendation for Enterprise Deployment:
+   - Use GPT-3.5 Turbo for text summarization (stage 1)
+   - Use GPT-4o for cluster labeling (stage 3)
+   - Process high-confidence predictions with model (95%)
+   - Process low-confidence predictions with Direct LLM (5%)
+   - Estimated annual cost: ~$2,200 with very high quality

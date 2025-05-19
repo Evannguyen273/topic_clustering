@@ -1,0 +1,147 @@
++-------------------------------------------------------+
+|           SOLUTION COMPARISON TABLES                   |
++-------------------------------------------------------+
+
+1. PIPELINE STAGE COMPARISON
+===========================
+
+┌────────────────┬──────────────────────┬─────────────────────┬─────────────────┐
+│ Stage          │ Purpose              │ Key Components      │ Failure Impact  │
+├────────────────┼──────────────────────┼─────────────────────┼─────────────────┤
+│ 1. Embeddings  │ Convert text to      │ - LLM summarization │ No impact on    │
+│                │ vector space         │ - Embedding API     │ existing models │
+│                │                      │ - Data cleaning     │                 │
+├────────────────┼──────────────────────┼─────────────────────┼─────────────────┤
+│ 2. Clustering  │ Group similar        │ - UMAP reduction    │ No impact on    │
+│                │ incidents            │ - HDBSCAN algorithm │ existing models │
+│                │                      │ - Hyperparameter    │                 │
+│                │                      │   optimization      │                 │
+├────────────────┼──────────────────────┼─────────────────────┼─────────────────┤
+│ 3. Analysis    │ Label and organize   │ - LLM labeling      │ No impact on    │
+│                │ clusters             │ - Domain grouping   │ existing models │
+│                │                      │ - Sample extraction │                 │
+├────────────────┼──────────────────────┼─────────────────────┼─────────────────┤
+│ 4. Save        │ Persist results and  │ - BigQuery export   │ No impact on    │
+│                │ update pointers      │ - Blob storage      │ existing models │
+│                │                      │ - Final pointer     │ Only updates    │
+│                │                      │   ONLY on success   │ pointer on      │
+│                │                      │                     │ full success    │
+└────────────────┴──────────────────────┴─────────────────────┴─────────────────┘
+
+
+2. APPROACH COMPARISON: MODEL-BASED VS DIRECT LLM
+================================================
+
+┌────────────────────┬────────────────────────┬───────────────────────┐
+│ Characteristic     │ Model-Based Approach   │ Direct LLM Approach   │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Training Cost      │ $20-60 per cycle       │ $0 (no training)      │
+│ (44K incidents)    │                        │                       │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Prediction Cost    │ $0.0005 per incident   │ $0.01-0.10 per item   │
+│ (per incident)     │ ($50/100K incidents)   │ ($1000-10K/100K items)│
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Monthly Cost       │ $2-3 for predictions   │ $30-300 for same vol. │
+│ (300 items/day)    │ + $5-15 for training   │                       │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Consistency        │ Very high              │ Moderate              │
+│                    │ (same model for all)   │ (LLM variations)      │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Response Time      │ Fast (milliseconds)    │ Slow (1-3 seconds)    │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Maintainability    │ Moderate               │ Simple                │
+│                    │ (retraining required)  │ (prompt updates only) │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Adaptability       │ Low                    │ High                  │
+│                    │ (limited to patterns   │ (handles novel cases) │
+│                    │  in training data)     │                       │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Cost Scaling       │ Excellent              │ Poor                  │
+│                    │ (cost grows slowly)    │ (linear cost growth)  │
+└────────────────────┴────────────────────────┴───────────────────────┘
+
+
+3. TRAINING COST COMPARISON BY LLM MODEL
+=======================================
+
+┌────────────────────┬────────────────┬────────────────┬────────────────┐
+│ Component          │ GPT-3.5 Turbo  │ GPT-4o mini    │ GPT-4o         │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Stage 1            │ $18-20         │ $50-60         │ $200-230       │
+│ (Summarization)    │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Stage 3            │ $0.20-0.60     │ $0.60-1.80     │ $2.00-6.00     │
+│ (Labeling+Domains) │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Total Training     │ $18-21         │ $51-62         │ $202-236       │
+│ for 44K incidents  │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Quality Rating     │ Good           │ Very Good      │ Excellent      │
+│                    │ 75-80%         │ 85-90%         │ 95-100%        │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Cost/Quality Ratio │ Best value     │ Good balance   │ Premium        │
+│                    │ (baseline)     │ (3x cost,      │ (11x cost,     │
+│                    │                │ +10-15% quality)│ +20-25% quality)│
+└────────────────────┴────────────────┴────────────────┴────────────────┘
+
+
+4. SYSTEM PERFORMANCE METRICS
+===========================
+
+┌────────────────────┬────────────────────────────────────────────────┐
+│ Metric             │ Typical Performance                            │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Clustering Rate    │ 75-85% (15-25% noise)                          │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Number of Clusters │ 30-50 per tech center                          │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Domain Categories  │ 8-12 per tech center                           │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Processing Time    │ 4-6 hours for complete pipeline on 44K records │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Storage Required   │ ~200MB per tech center per training cycle      │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Prediction Latency │ Near real-time (<1 sec per incident)           │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Recommended        │ Quarterly (every 3 months)                     │
+│ Retraining         │                                                │
+└────────────────────┴────────────────────────────────────────────────┘
+
+
+5. ANNUAL COST COMPARISON (100 INCIDENTS/DAY, 4 TRAINING CYCLES)
+===============================================================
+
+┌────────────────────┬────────────────────────┬───────────────────────┐
+│ Component          │ Model-Based Approach   │ Direct LLM Approach   │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Training           │ $80-240                │ $0                    │
+│ (depends on model) │ (4 cycles/year)        │                       │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Daily Prediction   │ $0.05/day              │ $1-10/day             │
+│ (100 incidents)    │                        │                       │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Annual Prediction  │ $18                    │ $365-3,650            │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ Storage            │ $5-10                  │ $0                    │
+├────────────────────┼────────────────────────┼───────────────────────┤
+│ TOTAL ANNUAL COST  │ $103-268               │ $365-3,650            │
+└────────────────────┴────────────────────────┴───────────────────────┘
+
+
+6. HYBRID APPROACH COST OPTIMIZATION
+==================================
+
+┌────────────────────┬────────────────────────────────────────────────┐
+│ Component          │ Recommended Strategy                           │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Training Pipeline  │ Stage 1: GPT-3.5 Turbo (cost effective)        │
+│                    │ Stage 3: GPT-4o (high quality at minimal cost) │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Prediction Pipeline│ 90% Model-based prediction                     │
+│                    │ 10% Direct LLM for low-confidence cases        │
+├────────────────────┼────────────────────────────────────────────────┤
+│ Annual Costs       │ Training: ~$88-96                              │
+│ (Hybrid)           │ Prediction: ~$55                               │
+│                    │ Storage: ~$10                                  │
+│                    │ TOTAL: ~$153-161                               │
+└────────────────────┴────────────────────────────────────────────────┘

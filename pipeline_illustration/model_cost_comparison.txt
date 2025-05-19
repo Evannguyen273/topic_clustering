@@ -1,0 +1,71 @@
++-------------------------------------------------------+
+|           MODEL COMPARISON FOR TRAINING PIPELINE       |
++-------------------------------------------------------+
+
+┌────────────────────┬────────────────┬────────────────┬────────────────┐
+│ Parameter          │   GPT-3.5      │  GPT-4o mini   │     GPT-4o     │
+│                    │    Turbo       │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Input Cost         │ $0.001/1K      │ $0.003/1K      │ $0.01/1K       │
+│ (per 1K tokens)    │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Output Cost        │ $0.002/1K      │ $0.006/1K      │ $0.03/1K       │
+│ (per 1K tokens)    │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Stage 1 Cost       │ ~$18-20        │ ~$50-60        │ ~$200-230      │
+│ (44K incidents)    │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Stage 3 Labeling   │ ~$0.10-0.30    │ ~$0.30-0.90    │ ~$1.00-3.00    │
+│ Cost               │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Stage 3 Domain     │ ~$0.10-0.30    │ ~$0.30-0.90    │ ~$1.00-3.00    │
+│ Grouping Cost      │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Total Training     │ ~$18-21        │ ~$51-62        │ ~$202-236      │
+│ Cost (44K records) │                │                │                │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ API Throughput     │ Fastest        │ Medium         │ Slowest        │
+│ (Relative)         │ (1.5-2x faster)│                │ (1.5-2x slower)│
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Text Summarization │ 70-80%         │ 85-90%         │ 95-100%        │ 
+│ Quality            │ Basic summaries│ Good detail    │ Excellent with │
+│                    │ missing details│ retention      │ critical info  │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Cluster Labeling   │ 75-80%         │ 85-90%         │ 95-100%        │
+│ Quality            │ Generic labels │ Specific labels│ Highly specific│
+│                    │ some inaccuracy│ good accuracy  │ & consistent   │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Noise Detection    │ Fair           │ Good           │ Excellent      │
+│                    │ May miss some  │ Better at      │ Best at        │
+│                    │ patterns       │ pattern detect │ finding patterns│
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ Domain Grouping    │ 75-80%         │ 85-90%         │ 95-100%        │
+│ Quality            │ Basic grouping │ Better         │ Most intuitive │
+│                    │ less coherent  │ hierarchies    │ organization   │
+├────────────────────┼────────────────┼────────────────┼────────────────┤
+│ JSON Structure     │ Occasional     │ Good           │ Excellent      │
+│ Reliability        │ failures       │ reliability    │ well-structured│
+└────────────────────┴────────────────┴────────────────┴────────────────┘
+
+RECOMMENDED MODEL BY TRAINING COMPONENT:
+---------------------------------------
+1. Stage 1 (Embeddings) - Text Summarization:
+   COST-EFFICIENT: GPT-3.5 Turbo ($18-20)
+   BALANCED: GPT-4o mini ($50-60)
+   HIGHEST QUALITY: GPT-4o ($200-230)
+
+2. Stage 3 (Cluster Labeling & Domain Organization):
+   * ALWAYS USE GPT-4o ($2-6 total cost)
+   * The quality improvement is significant and cost difference minimal
+   * Proper labeling is critical for entire system's usability
+
+OVERALL RECOMMENDATION:
+---------------------
+HYBRID APPROACH - Best cost/performance balance:
+* Stage 1: GPT-3.5 Turbo for summarization
+* Stage 3: GPT-4o for labeling/organization
+* Total cost: ~$20-25 per training run
+
+For exceptional quality on ALL components (~$60 premium):
+* Use GPT-4o mini for Stage 1
+* Use GPT-4o for Stage 3

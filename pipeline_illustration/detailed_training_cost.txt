@@ -1,0 +1,127 @@
++-------------------------------------------------------+
+|     DETAILED TRAINING COST BREAKDOWN - ONE TECH CENTER |
+|     44,000 INCIDENTS, 150-200 CLUSTERS, 15 DOMAINS    |
++-------------------------------------------------------+
+
+1. TEXT SUMMARIZATION (3 COLUMNS TO EMBEDDING-READY TEXT)
+========================================================
+Assumptions:
+ - 44,000 incidents
+ - 3 fields/columns per incident (short_description, description, business_service)
+ - Average 272 tokens per incident 
+ - Output summary ~40 tokens per incident
+
+┌────────────────────────┬───────────┬───────────┬───────────┬───────────┐
+│ MODEL                  │ INPUT     │ OUTPUT    │ TOTAL     │ QUALITY   │
+│                        │ COST ($)  │ COST ($)  │ COST ($)  │ LEVEL     │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-3.5 Turbo          │ $11.97    │ $3.52     │ $15.49    │ Good      │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-4o mini            │ $35.90    │ $10.56    │ $46.46    │ Very Good │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-4o                 │ $119.68   │ $52.80    │ $172.48   │ Excellent │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ Claude 3 Haiku         │ $2.99     │ $2.20     │ $5.19     │ Good      │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ Gemini 1.5 Flash       │ $4.19     │ $1.23     │ $5.42     │ Good      │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ Gemini 1.5 Pro         │ $8.38     │ $2.46     │ $10.84    │ Good+     │
+└────────────────────────┴───────────┴───────────┴───────────┴───────────┘
+
+2. EMBEDDING GENERATION
+=====================
+Azure OpenAI Embedding API: $0.44
+ - 44,000 embeddings × $0.00001 per embedding = $0.44
+
+3. CLUSTER LABELING (150-200 CLUSTERS)
+===================================
+Assumptions:
+ - 200 clusters to label
+ - Each cluster has up to 300 sample incidents for context (~20 tokens per sample)
+ - Total input tokens per cluster: ~6,000 tokens (300 samples × 20 tokens)
+ - Generated label and description (~50 tokens per cluster)
+
+┌────────────────────────┬───────────┬───────────┬───────────┬───────────┐
+│ MODEL                  │ INPUT     │ OUTPUT    │ TOTAL     │ QUALITY   │
+│                        │ COST ($)  │ COST ($)  │ COST ($)  │ LEVEL     │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-3.5 Turbo          │ $1.20     │ $0.02     │ $1.22     │ Basic     │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-4o mini            │ $3.60     │ $0.06     │ $3.66     │ Good      │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-4o                 │ $12.00    │ $0.30     │ $12.30    │ Excellent │
+└────────────────────────┴───────────┴───────────┴───────────┴───────────┘
+
+4. DOMAIN ORGANIZATION (15 DOMAINS)
+================================
+Assumptions:
+ - Organizing 200 clusters into 15 domains
+ - Input includes all cluster labels and samples (~25K tokens)
+ - Output includes domain definitions and cluster assignments (~3K tokens)
+
+┌────────────────────────┬───────────┬───────────┬───────────┬───────────┐
+│ MODEL                  │ INPUT     │ OUTPUT    │ TOTAL     │ QUALITY   │
+│                        │ COST ($)  │ COST ($)  │ COST ($)  │ LEVEL     │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-3.5 Turbo          │ $0.03     │ $0.01     │ $0.04     │ Basic     │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-4o mini            │ $0.08     │ $0.02     │ $0.10     │ Good      │
+├────────────────────────┼───────────┼───────────┼───────────┼───────────┤
+│ GPT-4o                 │ $0.25     │ $0.09     │ $0.34     │ Excellent │
+└────────────────────────┴───────────┴───────────┴───────────┴───────────┘
+
+5. TOTAL TRAINING PIPELINE COST
+============================
+
+COST-OPTIMIZED SETUP (CLAUDE HAIKU + GPT-4o LABELING):
+┌────────────────────────┬───────────┬───────────┬───────────┐
+│ COMPONENT              │ MODEL     │ COST ($)  │ % OF TOTAL│
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Text Summarization     │ Claude 3  │ $5.19     │ 28.5%     │
+│                        │ Haiku     │           │           │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Embedding Generation   │ Azure API │ $0.44     │ 2.4%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Cluster Labeling       │ GPT-4o    │ $12.30    │ 67.5%     │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Domain Organization    │ GPT-4o    │ $0.34     │ 1.9%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ TOTAL                  │           │ $18.27    │ 100%      │
+└────────────────────────┴───────────┴───────────┴───────────┘
+
+BALANCED SETUP (GEMINI 1.5 PRO + GPT-4o LABELING):
+┌────────────────────────┬───────────┬───────────┬───────────┐
+│ COMPONENT              │ MODEL     │ COST ($)  │ % OF TOTAL│
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Text Summarization     │ Gemini 1.5│ $10.84    │ 45.9%     │
+│                        │ Pro       │           │           │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Embedding Generation   │ Azure API │ $0.44     │ 1.9%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Cluster Labeling       │ GPT-4o    │ $12.30    │ 51.3%     │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Domain Organization    │ GPT-4o    │ $0.34     │ 1.4%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ TOTAL                  │           │ $23.92    │ 100%      │
+└────────────────────────┴───────────┴───────────┴───────────┘
+
+QUALITY-OPTIMIZED SETUP (GPT-4o FOR ALL STAGES):
+┌────────────────────────┬───────────┬───────────┬───────────┐
+│ COMPONENT              │ MODEL     │ COST ($)  │ % OF TOTAL│
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Text Summarization     │ GPT-4o    │ $172.48   │ 93.2%     │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Embedding Generation   │ Azure API │ $0.44     │ 0.2%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Cluster Labeling       │ GPT-4o    │ $12.30    │ 6.7%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ Domain Organization    │ GPT-4o    │ $0.34     │ 0.2%      │
+├────────────────────────┼───────────┼───────────┼───────────┤
+│ TOTAL                  │           │ $185.56   │ 100%      │
+└────────────────────────┴───────────┴───────────┴───────────┘
+
+KEY OBSERVATIONS:
+- With 300 samples per cluster, cluster labeling costs are now significant
+- Text summarization still represents a large portion of costs
+- Using premium models for cluster labeling costs more but delivers better quality
+- Annual cost (4 training cycles): $73.08 (cost-optimized) to $742.24 (quality-optimized)

@@ -1,0 +1,97 @@
++-------------------------------------------------------+
+|        TECH CENTER PROCESSING ESTIMATE                |
+|        (44,000 INCIDENTS)                             |
++-------------------------------------------------------+
+
+1. COST ESTIMATES
+================
+
+TRAINING PIPELINE (ONE-TIME):
+----------------------------
+Using recommended hybrid approach (GPT-3.5 Turbo for Stage 1, GPT-4o for Stage 3):
+
+Stage 1 Embeddings (GPT-3.5 Turbo):
+- Text summarization: ~$18-20 
+  (10M input tokens × $0.001/1K tokens = $10)
+  (4.4M output tokens × $0.002/1K tokens = $8.80)
+- Azure OpenAI embedding API: ~$0.44
+  (44K embeddings × $0.00001 per embedding)
+
+Stage 2 Clustering:
+- No API costs, only compute resources
+
+Stage 3 Analysis (GPT-4o):
+- Cluster labeling: ~$1.50
+- Domain organization: ~$1.50
+- Very high quality with minimal cost impact
+
+Stage 4 Save Results:
+- No API costs, only storage costs
+
+TOTAL TRAINING COST: ~$22-24 per training cycle
+
+PREDICTION PIPELINE (ONGOING):
+----------------------------
+Per 100 new incidents per day:
+
+- Text summarization (GPT-3.5): ~$0.04
+- Embedding generation: ~$0.001
+- Model inference: negligible
+
+TOTAL DAILY PREDICTION COST: ~$0.05 per day
+ANNUAL PREDICTION COST: ~$18 per year
+
+2. RESOURCE REQUIREMENTS
+======================
+
+STORAGE (AZURE BLOB):
+-------------------
+- Raw incident data: ~50MB
+- Embeddings: ~100MB
+- Model artifacts: ~20MB
+- Analysis results: ~30MB
+- Total storage per training cycle: ~200MB
+
+COMPUTE RESOURCES:
+----------------
+- Stage 1 (Embeddings): 2-4 CPU cores, 8GB RAM, ~2-3 hours
+- Stage 2 (Clustering): 4+ CPU cores, 16GB RAM, ~1-2 hours
+- Stage 3 (Analysis): 2 CPU cores, 4GB RAM, ~0.5 hours
+- Stage 4 (Save): 2 CPU cores, 4GB RAM, ~0.5 hours
+
+TOTAL PROCESSING TIME: ~4-6 hours per training cycle
+
+3. EXPECTED RESULTS
+=================
+
+CLUSTERING PERFORMANCE:
+---------------------
+- Number of meaningful clusters: ~30-50
+- Noise percentage: ~15-25%
+- Clustering rate: ~75-85%
+- Number of domains/categories: ~8-12
+
+MODEL QUALITY:
+------------
+- Embedding quality: Very high (Azure OpenAI)
+- Cluster coherence: Good to excellent
+- Label quality: Excellent (GPT-4o)
+- Domain organization: Excellent (GPT-4o)
+
+4. RETRAINING RECOMMENDATION
+==========================
+
+- Initial training: Process all 44,000 incidents
+- Retraining frequency: Quarterly (every 3 months)
+- Incremental training: New incidents since last training
+- Annual cost: ~$88-96 (4 training cycles per year)
+
+5. TOTAL ESTIMATED ANNUAL COST
+============================
+
+Training: ~$88-96 (quarterly retraining)
+Prediction: ~$18 (daily predictions)
+Storage: ~$5-10 (blob storage)
+
+TOTAL ANNUAL COST: ~$111-124
+COST PER INCIDENT: ~$0.0025 (incredibly cost-effective)

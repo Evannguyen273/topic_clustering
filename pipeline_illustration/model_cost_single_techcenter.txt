@@ -1,0 +1,66 @@
++-------------------------------------------------------+
+|      SUMMARIZATION COST COMPARISON FOR ONE TECH CENTER |
+|      44,000 INCIDENTS (STAGE 1 - EMBEDDINGS)          |
++-------------------------------------------------------+
+
+SUMMARIZATION PARAMETERS:
+- 44,000 incidents
+- Average 272 tokens per incident
+- Total input tokens: 11,968,000
+- Output summary ~30 words (40 tokens)
+- Total output tokens: 1,760,000
+
+┌────────────────────┬────────────┬────────────┬────────────┬────────────┐
+│ COST COMPONENT     │ INPUT COST │ OUTPUT COST│ TOTAL COST │ RELATIVE   │
+│ (Model)            │ ($)        │ ($)        │ ($)        │ PERFORMANCE│
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ GPT-3.5 Turbo      │ $11.97     │ $3.52      │ $15.49     │ Good       │
+│ ($0.001/1K input)  │            │            │            │ 75-80%     │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ GPT-4o mini        │ $35.90     │ $10.56     │ $46.46     │ Very Good  │
+│ ($0.003/1K input)  │            │            │            │ 85-90%     │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ GPT-4o             │ $119.68    │ $52.80     │ $172.48    │ Excellent  │
+│ ($0.01/1K input)   │            │            │            │ 95-100%    │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Claude 3 Haiku     │ $2.99      │ $2.20      │ $5.19      │ Good       │
+│ ($0.00025/1K input)│            │            │            │ 70-75%     │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Claude 3 Sonnet    │ $35.90     │ $26.40     │ $62.30     │ Very Good  │
+│ ($0.003/1K input)  │            │            │            │ 85-90%     │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Claude 3 Opus      │ $179.52    │ $132.00    │ $311.52    │ Excellent  │
+│ ($0.015/1K input)  │            │            │            │ 95-100%    │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Gemini 1.0 Pro     │ $2.99      │ $0.88      │ $3.87      │ Basic      │
+│ ($0.00025/1K input)│            │            │            │ 65-70%     │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Gemini 1.5 Pro     │ $8.38      │ $2.46      │ $10.84     │ Good       │
+│ ($0.0007/1K input) │            │            │            │ 80-85%     │
+├────────────────────┼────────────┼────────────┼────────────┼────────────┤
+│ Gemini 1.5 Flash   │ $4.19      │ $1.23      │ $5.42      │ Good       │
+│ ($0.00035/1K input)│            │            │            │ 75-80%     │
+└────────────────────┴────────────┴────────────┴────────────┴────────────┘
+
+COST-EFFECTIVENESS RANKING (BEST TO WORST):
+------------------------------------------
+1. Gemini 1.0 Pro: $3.87 (Lowest cost but basic quality)
+2. Claude 3 Haiku: $5.19 (Excellent value, good quality)
+3. Gemini 1.5 Flash: $5.42 (Good balance of cost/quality)
+4. Gemini 1.5 Pro: $10.84 (Good quality at reasonable cost)
+5. GPT-3.5 Turbo: $15.49 (Good all-around option)
+6. GPT-4o mini: $46.46 (High quality at medium cost)
+7. Claude 3 Sonnet: $62.30 (Very good quality, medium-high cost)
+8. GPT-4o: $172.48 (Excellent quality, high cost)
+9. Claude 3 Opus: $311.52 (Highest quality, premium cost)
+
+TOTAL TRAINING PIPELINE COST ESTIMATE (WITH GEMINI 1.5 PRO):
+-----------------------------------------------------------
+Stage 1: $10.84 (Text summarization with Gemini 1.5 Pro)
+Stage 1: $0.44 (Embedding API - 44K embeddings × $0.00001 each)
+Stage 2: $0 (Clustering - compute only)
+Stage 3: $3.00 (Cluster labeling with GPT-4o)
+Stage 4: $0 (Saving - storage only)
+
+TOTAL TRAINING COST: ~$14.28 per training cycle
+TOTAL ANNUAL COST (4 CYCLES): ~$57.12

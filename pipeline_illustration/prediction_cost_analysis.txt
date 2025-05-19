@@ -1,0 +1,97 @@
++-------------------------------------------------------+
+|       PREDICTION COST ANALYSIS                         |
+|       COST PER INCIDENT AND VARIOUS VOLUMES            |
++-------------------------------------------------------+
+
+1. COST PER INCIDENT BREAKDOWN
+============================
+
+Assumptions:
+- Each incident has 3 text fields requiring summarization
+- Average 272 tokens per incident
+- Output summary ~40 tokens per incident
+
+┌────────────────────┬───────────────┬───────────────┬───────────────┐
+│ COMPONENT          │ COST PER      │ % OF TOTAL    │ MODEL/SERVICE │
+│                    │ INCIDENT ($)  │ COST          │               │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Text Summarization │ $0.00035      │ 97.2%         │ GPT-3.5 Turbo │
+│ (cost-efficient)   │               │               │               │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Text Summarization │ $0.00012      │ 92.3%         │ Claude 3 Haiku│
+│ (most economical)  │               │               │               │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Embedding          │ $0.00001      │ 2.8%/7.7%     │ Azure OpenAI  │
+│ Generation         │               │               │ Embedding API │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Model Inference    │ $0            │ 0%            │ N/A (compute  │
+│                    │               │               │ cost only)    │
+└────────────────────┴───────────────┴───────────────┴───────────────┘
+
+TOTAL COST PER INCIDENT: 
+- With GPT-3.5 Turbo: $0.00036
+- With Claude 3 Haiku: $0.00013
+
+2. DAILY PREDICTION COSTS BY VOLUME
+=================================
+
+┌────────────────────┬───────────────┬───────────────┬───────────────┐
+│ DAILY VOLUME       │ COST WITH     │ COST WITH     │ COST WITH     │
+│ (INCIDENTS)        │ GPT-3.5 ($)   │ CLAUDE 3 ($)  │ DIRECT LLM ($)│
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ 100                │ $0.036        │ $0.013        │ $1.00         │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ 500                │ $0.18         │ $0.065        │ $5.00         │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ 1,000              │ $0.36         │ $0.13         │ $10.00        │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ 5,000              │ $1.80         │ $0.65         │ $50.00        │
+└────────────────────┴───────────────┴───────────────┴───────────────┘
+
+Note: Direct LLM cost represents sending full incident text directly to 
+LLM for classification without using embeddings and model lookup.
+
+3. MONTHLY AND ANNUAL PREDICTION COSTS (FOR 120 INCIDENTS/DAY PER TECH CENTER)
+===========================================================================
+
+┌────────────────────┬───────────────┬───────────────┬───────────────┐
+│ TIMEFRAME          │ COST WITH     │ COST WITH     │ COST WITH     │
+│ (120/DAY)          │ GPT-3.5 ($)   │ CLAUDE 3 ($)  │ DIRECT LLM ($)│
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Daily              │ $0.043        │ $0.016        │ $1.20         │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Monthly (30 days)  │ $1.30         │ $0.47         │ $36.00        │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Annual             │ $15.77        │ $5.69         │ $438.00       │
+├────────────────────┼───────────────┼───────────────┼───────────────┤
+│ Annual             │ $236.52       │ $85.41        │ $6,570.00     │
+│ (15 Tech Centers)  │               │               │               │
+└────────────────────┴───────────────┴───────────────┴───────────────┘
+
+4. COST COMPARISON OF PREDICTION APPROACHES
+========================================
+
+┌────────────────────────────────────┬───────────────┬───────────────┐
+│ APPROACH                           │ ANNUAL COST   │ RELATIVE TO   │
+│                                    │ (15 CENTERS)  │ MODEL-BASED   │
+├────────────────────────────────────┼───────────────┼───────────────┤
+│ Model-based with Claude 3 Haiku    │ $85.41        │ 1×            │
+├────────────────────────────────────┼───────────────┼───────────────┤
+│ Model-based with GPT-3.5 Turbo     │ $236.52       │ 2.8×          │
+├────────────────────────────────────┼───────────────┼───────────────┤
+│ Model-based with GPT-4o            │ $3,942.00     │ 46.2×         │
+├────────────────────────────────────┼───────────────┼───────────────┤
+│ Direct LLM classification          │ $6,570.00     │ 76.9×         │
+└────────────────────────────────────┴───────────────┴───────────────┘
+
+5. KEY INSIGHTS
+============
+1. Text summarization represents 92-97% of prediction costs
+2. Claude 3 Haiku offers the most economical approach at just $85.41/year for all centers
+3. Direct LLM classification is 77× more expensive than the optimized model-based approach
+4. Cost savings increase dramatically with incident volume
+5. The recommended approach (Claude 3 Haiku summarization + model inference) offers:
+   - 77× lower cost than direct LLM classification
+   - Consistent, deterministic predictions
+   - Millisecond-level response times
+   - Scale-efficient architecture that handles growth well

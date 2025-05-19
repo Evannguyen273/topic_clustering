@@ -1,0 +1,94 @@
++-------------------------------------------------------+
+|       COST ANALYSIS WITH BIANNUAL TRAINING            |
+|       (2 TRAINING CYCLES PER YEAR)                    |
++-------------------------------------------------------+
+
+1. SINGLE TECH CENTER COST COMPARISON (44,000 INCIDENTS)
+======================================================
+
+┌────────────────────┬────────────┬────────────┬────────────┐
+│                    │ ANNUAL COST│ ANNUAL COST│ SAVINGS    │
+│ APPROACH           │ (4 CYCLES) │ (2 CYCLES) │ PER YEAR   │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Cost-Optimized     │ $73.08     │ $36.54     │ $36.54     │
+│ (Claude + GPT-4o)  │            │            │ (50%)      │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Balanced Approach  │ $95.68     │ $47.84     │ $47.84     │
+│ (Gemini + GPT-4o)  │            │            │ (50%)      │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Quality-Optimized  │ $742.24    │ $371.12    │ $371.12    │
+│ (GPT-4o all stages)│            │            │ (50%)      │
+└────────────────────┴────────────┴────────────┴────────────┘
+
+2. ENTERPRISE-WIDE COMPARISON (15 TECH CENTERS)
+=============================================
+
+┌────────────────────┬────────────┬────────────┬────────────┐
+│                    │ 4 CYCLES   │ 2 CYCLES   │ SAVINGS    │
+│ COST COMPONENT     │ PER YEAR   │ PER YEAR   │ PER YEAR   │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Training Costs     │ $1,096.20  │ $548.10    │ $548.10    │
+│ (Cost-Optimized)   │            │            │            │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Training Costs     │ $1,435.20  │ $717.60    │ $717.60    │
+│ (Balanced)         │            │            │            │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Training Costs     │ $11,133.60 │ $5,566.80  │ $5,566.80  │
+│ (Quality-Optimized)│            │            │            │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Prediction Costs   │ $85.41     │ $85.41     │ $0         │
+│ (Claude 3 Haiku)   │            │            │            │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ Storage Costs      │ $75-150    │ $50-100    │ $25-50     │
+├────────────────────┼────────────┼────────────┼────────────┤
+│ TOTAL (Optimized)  │ $1,256.61- │ $683.51-   │ $573.10-   │
+│                    │ $1,331.61  │ $733.51    │ $598.10    │
+└────────────────────┴────────────┴────────────┴────────────┘
+
+3. REVISED 5-YEAR COST PROJECTION (OPTIMIZED APPROACH)
+===================================================
+
+┌────────────────┬───────────┬───────────┬───────────┐
+│ YEAR           │ 4 CYCLES  │ 2 CYCLES  │ SAVINGS   │
+│                │ PER YEAR  │ PER YEAR  │           │
+├────────────────┼───────────┼───────────┼───────────┤
+│ Year 1         │ $1,331.61 │ $733.51   │ $598.10   │
+├────────────────┼───────────┼───────────┼───────────┤
+│ Year 2         │ $1,331.61 │ $733.51   │ $598.10   │
+├────────────────┼───────────┼───────────┼───────────┤
+│ Year 3         │ $1,331.61 │ $733.51   │ $598.10   │
+├────────────────┼───────────┼───────────┼───────────┤
+│ Year 4         │ $1,331.61 │ $733.51   │ $598.10   │
+├────────────────┼───────────┼───────────┼───────────┤
+│ Year 5         │ $1,331.61 │ $733.51   │ $598.10   │
+├────────────────┼───────────┼───────────┼───────────┤
+│ 5-YEAR TOTAL   │ $6,658.05 │ $3,667.55 │ $2,990.50 │
+└────────────────┴───────────┴───────────┴───────────┘
+
+4. IMPACT ASSESSMENT
+==================
+
+ADVANTAGES OF BIANNUAL TRAINING:
+-------------------------------
+1. 50% reduction in training costs (approximately $550-$5,500 annual savings)
+2. Reduced operational overhead (fewer training jobs to manage and monitor)
+3. More time between cycles to gather sufficient new data for meaningful model updates
+4. Less risk of model thrashing (frequent model changes causing inconsistent predictions)
+
+DISADVANTAGES OF BIANNUAL TRAINING:
+---------------------------------
+1. Slower adaptation to emerging incident categories and terminology
+2. Performance degradation between training cycles (model drift)
+3. Longer period before fixing any quality issues discovered in production
+4. Risk of accumulating noise in the prediction registry between retraining
+
+RECOMMENDED IMPLEMENTATION:
+-------------------------
+- Schedule biannual training at fixed dates (e.g., January and July)
+- Implement continuous monitoring to detect model drift
+- Add trigger for ad-hoc training cycle if:
+  * Noise classification exceeds 30% of predictions
+  * Significant new products/services are launched
+  * Subject matter experts report decline in classification quality
+- Maintain flexibility to run additional training cycles when needed
+- Consider incremental training approach where new data supplements existing data

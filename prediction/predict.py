@@ -203,7 +203,7 @@ def load_models(tech_center: str, training_cycle: Optional[str] = None) -> Tuple
 
 def process_incident_texts(df: pd.DataFrame) -> pd.Series:
     """
-    Process incident texts for embedding
+    Process incident texts for embedding - aligned with training pipeline
     
     Args:
         df: DataFrame with incident data
@@ -211,26 +211,17 @@ def process_incident_texts(df: pd.DataFrame) -> pd.Series:
     Returns:
         Series with processed texts
     """
-    result = pd.Series(index=df.index)
+    # Import the same function used in training for consistency
+    from ..pipeline.stage1_embeddings import process_incident_summaries
     
-    for idx, row in df.iterrows():
-        # Combine short description and business service
-        short_desc = get_safe_text(row, 'short_description')
-        business_svc = get_safe_text(row, 'business_service')
-        
-        # Get description if available
-        desc = get_safe_text(row, 'description')
-        if len(desc) > 20:  # Only use description if it has meaningful content
-            # Clean and trim description
-            desc = clean_text_for_summary(desc)
-            desc = desc[:1000]  # Limit to 1000 chars
-            combined = f"{short_desc} - {business_svc}. {desc}"
-        else:
-            combined = f"{short_desc} - {business_svc}"
-        
-        result[idx] = combined
+    # Use the same function as training to ensure consistency
+    combined_summaries, fallback_stats = process_incident_summaries(
+        df, 
+        batch_size=min(10, len(df))  # Use smaller batch for LLM summarization
+    )
     
-    return result
+    logging.info(f"Text processing stats: {fallback_stats}")
+    return combined_summaries
 
 def predict_incidents(tech_center: str, registry: Optional[PredictionRegistry] = None,
                     since_timestamp: Optional[str] = None, 
@@ -321,7 +312,7 @@ def predict_incidents(tech_center: str, registry: Optional[PredictionRegistry] =
                 
             raise ValueError(f"Failed to load prediction models for {tech_center}")
         
-        # 4. Process texts for embedding
+        # 4. Process texts for embedding 
         incidents_df['combined_incidents_summary'] = process_incident_texts(incidents_df)
         
         # 5. Generate embeddings
