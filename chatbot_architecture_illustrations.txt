@@ -1,0 +1,129 @@
+=====================================================================
+          TEXT-TO-SQL CHATBOT ARCHITECTURE ILLUSTRATIONS
+=====================================================================
+
+1. HIGH-LEVEL ARCHITECTURE
+---------------------------
+
+    ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+    │                 │     │                 │     │                 │
+    │  User Interface │────▶│  NLU Processing │────▶│  SQL Generation │
+    │                 │     │                 │     │                 │
+    └─────────────────┘     └─────────────────┘     └─────────────────┘
+            ▲                       ▲                       │
+            │                       │                       │
+            │                       │                       ▼
+    ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+    │                 │     │                 │     │                 │
+    │ Response Format │◀────│  Learning Layer │◀────│ Database Access │
+    │                 │     │                 │     │                 │
+    └─────────────────┘     └─────────────────┘     └─────────────────┘
+
+
+2. USER QUERY FLOW
+------------------
+
+    [User] → "Show me all high priority problems from last month"
+       │
+       ▼
+    [Intent Classification] → "This is a data retrieval request with filters"
+       │
+       ▼
+    [Entity Extraction] → "priority=high, timeframe=last month, table=Problems"
+       │
+       ▼
+    [SQL Generation] → "SELECT * FROM stage.Problems 
+                        WHERE Priority='High' 
+                        AND CreatedDateTime >= DATEADD(month, -1, GETDATE())"
+       │
+       ▼
+    [Database] → "Returns 42 rows of data"
+       │
+       ▼
+    [Response] → "I found 42 high priority problems from last month. 
+                  The most common category was Network Issues (15)..."
+
+
+3. CONTEXT RESOLUTION PROCESS
+-----------------------------
+
+          ┌─────────────┐
+          │ User Query  │
+          └──────┬──────┘
+                 │
+                 ▼
+    ┌───────────────────────┐
+    │ Entity Identification │
+    └───────────┬───────────┘
+                │
+                ▼
+         ┌─────────────┐
+         │ Schema Look │◀──┐
+         └──────┬──────┘   │
+                │          │
+                ▼          │    ┌─────────────────┐
+         ┌─────────────┐   └────┤ Metadata Store  │
+         │ Ambiguity?  │───┐    └─────────────────┘
+         └──────┬──────┘   │
+                │No        │Yes
+                ▼          │    ┌─────────────────┐
+         ┌─────────────┐   └───▶│ Ask Follow-up   │
+         │ Final Match │        └─────────────────┘
+         └─────────────┘
+
+
+4. LangChain SQL AGENT COMPONENTS
+---------------------------------
+
+    ┌───────────────────────────────────────────────────────────┐
+    │                      LangChain Agent                      │
+    │                                                           │
+    │  ┌─────────────┐   ┌─────────────┐   ┌─────────────────┐  │
+    │  │ LLM Model   │──▶│ Agent Core  │──▶│ SQL Agent Chain │  │
+    │  └─────────────┘   └─────────────┘   └─────────────────┘  │
+    │         ▲                                     │           │
+    └─────────┼─────────────────────────────────────┼───────────┘
+              │                                     ▼
+    ┌─────────┴─────────┐               ┌─────────────────────┐
+    │ Azure OpenAI API  │               │ SQLDatabaseToolkit  │
+    └───────────────────┘               └───────────┬─────────┘
+                                                    │
+                                                    ▼
+                                         ┌─────────────────────┐
+                                         │ Database Connection │
+                                         └─────────────────────┘
+
+
+5. FEEDBACK & LEARNING CYCLE
+----------------------------
+
+         ┌─────────┐
+         │ Results │
+         └────┬────┘
+              │
+    ┌─────────┼─────────┐
+    │         ▼         │
+    │  ┌────────────┐   │
+    │  │   User     │   │
+    │  │  Feedback  │   │
+    │  └──────┬─────┘   │
+    │         │         │
+    │         ▼         │
+    │  ┌────────────┐   │
+    │  │  Feedback  │   │
+    │  │ Collection │   │
+    │  └──────┬─────┘   │
+    │         │         │
+    │         ▼         │
+    │  ┌────────────┐   │
+    │  │   Model    │   │
+    │  │ Refinement │   │
+    │  └──────┬─────┘   │
+    │         │         │
+    └─────────┼─────────┘
+              │
+              ▼
+        ┌───────────┐
+        │ Improved  │
+        │ Responses │
+        └───────────┘
